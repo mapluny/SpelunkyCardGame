@@ -18,6 +18,13 @@
       min-height: 100vh;
     }
 
+    #game {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
     #player-stats, #enemy-stats, #energy {
       margin: 10px 0;
       padding: 10px;
@@ -25,6 +32,15 @@
       border-radius: 8px;
       text-align: center;
       width: 300px;
+    }
+
+    .player-stats, .enemy-stats, .energy {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 10px;
+      margin: auto;
     }
 
     .hand {
@@ -35,11 +51,19 @@
       flex-wrap: wrap;
     }
 
+    .cards {
+      display: flex;
+      gap: 10px;
+      padding: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
     .card {
-      border: 1px solid #ccc;
+      border: 1px solid #000000;
       padding: 10px;
       width: 120px;
-      background: #f5f5f5;
+      background: #3b6185;
       text-align: center;
       border-radius: 8px;
       animation: normalize 0.5s;
@@ -47,6 +71,26 @@
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       color: burlywood;
       cursor: pointer;
+    }
+
+    .deckcard {
+      border: 1px solid #000000;
+      padding: 10px;
+      width: 120px;
+      height: 140px;
+      background: #3b6185;
+      text-align: center;
+      border-radius: 8px;
+      animation: normalize 0.5s;
+      transition: background 0.3s, transform 0.2s;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      color: burlywood;
+      cursor: pointer;
+    }
+
+    .deckcard:hover {
+      background: #3b4385;
+      transform: scale(1.05);
     }
 
     .card:hover {
@@ -78,13 +122,95 @@
     #end-turn-button:hover {
       background: #e64a19;
     }
-  </style>
+
+  /* Deck Builder Styling */
+  #deck-builder {
+    margin: 20px 0;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 8px;
+    text-align: center;
+    width: 80%;
+    max-width: 800px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  #deck-builder h2 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: #ffcc00;
+  }
+
+  #cards {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 10px;
+  }
+
+  #cards .card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 100px;
+    background: #f5f5f5;
+    text-align: center;
+    border-radius: 8px;
+    transition: transform 0.2s, background 0.3s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: #333;
+    cursor: pointer;
+  }
+
+  #cards .card:hover {
+    background: #e0e0e0;
+    transform: scale(1.05);
+  }
+
+
+  /* Styling for the Ready Up button */
+  #ready-up {
+    margin: 20px;
+    padding: 10px 20px;
+    font-size: 1em;
+    background: #4caf50; /* Green background */
+    color: #fff; /* White text */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  #ready-up:hover {
+    background: #45a049; /* Darker green on hover */
+    transform: scale(1.05); /* Slightly enlarge on hover */
+  }
+
+  #ready-up:active {
+    background: #3e8e41; /* Even darker green when clicked */
+    transform: scale(0.95); /* Slightly shrink on click */
+  }
+</style>
 </head>
 <body>
+  <div id="game">
     <div id="turn-indicator" style="margin-bottom: 20px; font-size: 1.5em; font-weight: bold;"></div> <!-- Turn indicator -->
     <div id="player-stats"></div> <!-- Player stats -->
     <div id="energy"></div>       <!-- Energy -->
     <div class="hand" id="hand"></div> <!-- Hand -->
     <div id="enemy-stats"></div>  <!-- Enemy stats -->
+  </div>
+  <div id="deck-builder">
+    <p id="deck-builder-text">Create your deck!</p>
+    <p id="deck-builder-text">Click on a card to add it to your deck.</p>
+    <p id="deck-size-text"> </p>
+    <div id="cards"></div>
+    <button id="ready-up" onclick="readyUp()"> Ready Up </button>
+  </div>
+  <div id="full-game">
+    <h1>Game Full</h1>
+    <p> The game is full. You cannot join at this time </p>
+  </div>
 </body>
 </html>

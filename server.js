@@ -5,13 +5,15 @@ const wss = new WebSocket.Server({ port: 8080 });
 let players = [];
 let turnCount = 0;
 let currentPlayerIndex = 0; // Track whose turn it is
+let playerReadyCount = 0; // Track how many players are ready
 
 function broadcastTurnUpdate() {
     players.forEach((player, index) => {
         if (player.readyState === WebSocket.OPEN) {
             player.send(JSON.stringify({
                 type: 'turnUpdate',
-                isPlayerTurn: index === currentPlayerIndex
+                isPlayerTurn: index === currentPlayerIndex,
+                currentTurn: turnCount,
             }));
         }
     });
@@ -36,17 +38,21 @@ function resetState() {
             }));
         }
     });
+    playerReadyCount = 0;
+    turnCount = 0;
+    currentPlayerIndex = 0;
 }
 
 wss.on('connection', (ws) => {
     console.log('A player connected.');
 
     // Add the player to the list
-    players.push(ws);
-
-    if (players.length === 2) { // Start the game when 2 players connect
-        broadcastStartGame();
+    if (players.length >= 2) {
+        ws.send(JSON.stringify({ type: 'error', message: 'Game is full' }));
+        ws.close();
+        return;
     }
+    players.push(ws);
 
     // Broadcast a message to all players
     ws.on('message', (message) => {
@@ -62,6 +68,16 @@ wss.on('connection', (ws) => {
             turnCount++;
             currentPlayerIndex = (currentPlayerIndex + 1) % players.length; // Switch turn
             broadcastTurnUpdate();
+        }
+
+        if (parsedMessage.type === 'ready') {
+            playerReadyCount++;
+            if (playerReadyCount === players.length) {
+                broadcastStartGame();
+            }
+        }
+        if (parsedMessage.type === 'unready') {
+            playerReadyCount--;
         }
     });
 
